@@ -1,0 +1,186 @@
+{
+  "info": {
+    "name": "接口测试实践 - jsonplaceholder + httpbin",
+    "description": "个人接口测试练习：正常 / 异常 / 边界参数、GET/POST、状态码与字段断言。导入 Postman 后可直接 Run 验证。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "jsonplaceholder",
+      "item": [
+        {
+          "name": "GET posts/1 正常参数",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('状态码 200', () => pm.response.to.have.status(200));",
+                  "pm.test('返回 id=1', () => pm.expect(pm.response.json().id).to.eql(1));",
+                  "pm.test('title 是字符串', () => pm.expect(pm.response.json().title).to.be.a('string'));",
+                  "pm.test('userId 是数字', () => pm.expect(pm.response.json().userId).to.be.a('number'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://jsonplaceholder.typicode.com/posts/1"
+          }
+        },
+        {
+          "name": "GET posts/0 边界越界",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('越界 id=0 返回 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://jsonplaceholder.typicode.com/posts/0"
+          }
+        },
+        {
+          "name": "GET posts/101 边界越界",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('越界 id=101 返回 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://jsonplaceholder.typicode.com/posts/101"
+          }
+        },
+        {
+          "name": "POST posts 创建",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('创建返回 201', () => pm.response.to.have.status(201));",
+                  "pm.test('返回 id=101', () => pm.expect(pm.response.json().id).to.eql(101));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"foo\",\n  \"body\": \"bar\",\n  \"userId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "https://jsonplaceholder.typicode.com/posts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "httpbin",
+      "item": [
+        {
+          "name": "GET get 参数回显",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('状态码 200', () => pm.response.to.have.status(200));",
+                  "pm.test('args.a 回显为 1', () => pm.expect(pm.response.json().args.a).to.eql('1'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://httpbin.org/get?a=1"
+          }
+        },
+        {
+          "name": "GET status/404 状态码校验",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('返回 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://httpbin.org/status/404"
+          }
+        },
+        {
+          "name": "POST post 请求体回显",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('状态码 200', () => pm.response.to.have.status(200));",
+                  "pm.test('json 字段回显请求体', () => pm.expect(pm.response.json().json.name).to.eql('claude'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"claude\",\n  \"n\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "https://httpbin.org/post"
+          }
+        }
+      ]
+    }
+  ]
+}
