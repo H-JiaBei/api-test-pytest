@@ -75,10 +75,6 @@ pytest
 
 见 [docs/抓包验证.md](docs/抓包验证.md)。
 
-## 八、简历描述（可直接使用）
-
-> 选取 jsonplaceholder、httpbin 公开 API 作为被测对象，设计覆盖正常参数、异常参数、边界值的接口用例；使用 Postman 完成请求调试与断言设计；使用 Python + requests + Pytest 编写并执行 GET/POST、状态码校验、返回字段断言等用例（参数化驱动，HTML 报告输出）；使用 Fiddler/Charles 抓包分析请求与响应，验证接口实际行为与预期一致。
-
-## 九、测试结果（实测）
+## 八、测试结果（实测）
 
 本机 `pytest` 执行结果：**15 passed in 7.74s**，0 失败。HTML 报告见 [reports/report.html](reports/report.html)。
