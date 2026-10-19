@@ -1,8 +1,15 @@
-# 基于 Pytest 的接口测试实践（个人练习）
+# 接口自动化测试实践 —— Pytest + requests + Postman
 
-选取公开 API 作为被测对象，使用 **Postman** 完成接口请求调试与断言设计，使用 **Python + requests + Pytest** 编写并执行接口测试用例，使用 **Fiddler/Charles** 抓包验证接口实际行为与预期一致。
+以公开 API 为被测对象，完整走一遍「**Postman 断言设计 → Pytest 自动化 → 抓包验证**」的接口测试流程，覆盖正常参数、异常参数、边界值三类场景。
 
-## 一、被测系统
+## 项目亮点
+
+- **双工具断言**：Postman（请求调试 + JS 断言）+ Pytest（自动化用例 + HTML 报告）
+- **三场景覆盖**：正常 / 异常 / 边界值，`@pytest.mark.parametrize` 参数化驱动
+- **抓包验证**：Fiddler/Charles 分析请求与响应，验证接口实际行为与预期一致
+- **15 条用例全部通过**，附可导入的 Postman 集合与 pytest-html 报告
+
+## 被测系统
 
 | 被测系统 | 用途 | 地址 |
 |---|---|---|
@@ -11,35 +18,33 @@
 
 > 均为公开、免费、免 Token 接口。
 
-## 二、技术栈
+## 技术栈
 
-- Python 3.12
-- requests：发送 HTTP 请求
-- Pytest + pytest-html：用例组织、参数化、执行与 HTML 报告
-- Postman：接口调试与断言设计
-- Fiddler / Charles：抓包分析
+- Python 3.12 + requests
+- Pytest + pytest-html（用例组织、参数化、HTML 报告）
+- Postman（请求调试与断言设计）
+- Fiddler / Charles（抓包分析）
 
-## 三、目录结构
+## 目录结构
 
 ```
 api-test-pytest/
-├── README.md
 ├── config.py                 # 被测接口地址常量
-├── conftest.py               # 全局 fixture（复用 Session）
+├── conftest.py               # 全局 fixture（复用 requests.Session）
 ├── pytest.ini                # pytest 配置（自动生成 HTML 报告）
 ├── requirements.txt
 ├── testcases/
-│   ├── test_jsonplaceholder.py
-│   └── test_httpbin.py
+│   ├── test_jsonplaceholder.py   # jsonplaceholder 用例
+│   └── test_httpbin.py           # httpbin 用例
 ├── postman/
-│   └── api-test.postman_collection.json   # 可导入 Postman 的集合
+│   └── api-test.postman_collection.json   # 可导入 Postman 的集合（含断言脚本）
 ├── docs/
-│   └── 抓包验证.md
+│   └── 抓包验证.md            # Fiddler/Charles 抓包步骤
 └── reports/
-    └── report.html           # pytest-html 生成的测试报告
+    └── report.html           # pytest-html 测试报告
 ```
 
-## 四、用例设计（正常 / 异常 / 边界）
+## 用例设计（正常 / 异常 / 边界）
 
 | 编号 | 接口 | 场景 | 参数 | 预期状态码 | 断言 |
 |---|---|---|---|---|---|
@@ -55,7 +60,7 @@ api-test-pytest/
 
 字段断言覆盖：`id` / `userId`（int）、`title` / `body`（str）。
 
-## 五、快速开始
+## 快速开始
 
 ```bash
 # 1. 安装依赖（Windows 下建议加 PYTHONUTF8=1 避免编码报错）
@@ -65,16 +70,20 @@ PYTHONUTF8=1 pip install -r requirements.txt
 pytest
 ```
 
-## 六、Postman 调试与断言
+## Postman 调试与断言
 
 1. 打开 Postman → Import → 选择 `postman/api-test.postman_collection.json`。
-2. 逐个请求点 Send，右侧 Tests 标签页查看断言结果。
-3. 或对整个 Collection 点 Run，一次跑完全部用例。
+2. 单个请求点 Send，右侧 Tests 标签页查看断言结果。
+3. 对整个 Collection 点 Run，一次跑完全部用例。
 
-## 七、抓包验证
+## 抓包验证
 
 见 [docs/抓包验证.md](docs/抓包验证.md)。
 
-## 八、测试结果（实测）
+## 测试结果（实测）
 
 本机 `pytest` 执行结果：**15 passed in 7.74s**，0 失败。HTML 报告见 [reports/report.html](reports/report.html)。
+
+## 许可证
+
+本项目测试代码采用 [MIT License](LICENSE)，版权归 H-JiaBei 所有。
